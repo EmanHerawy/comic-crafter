@@ -45,7 +45,7 @@ contract BasicTokenSender is Withdraw {
         address _token,
         uint256 _amount,
          PayFeesIn payFeesIn
-    ) external {
+    ) external payable{
        IERC20(_token).transferFrom(
                 msg.sender,
                 address(this),
