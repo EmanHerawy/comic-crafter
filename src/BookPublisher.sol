@@ -6,6 +6,10 @@ pragma solidity ^0.8.19;
 import {IERC20} from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import {CCIPReceiver} from "./CCIPReceiver.sol";
 import {Client} from "@chainlink/contracts-ccip/src/v0.8/ccip/libraries/Client.sol";
+import {IRouterClient} from "@chainlink/contracts-ccip/src/v0.8/ccip/interfaces/IRouterClient.sol";
+import {LinkTokenInterface} from "@chainlink/contracts/src/v0.8/interfaces/LinkTokenInterface.sol";
+
+
  struct Config {
       uint256   superNFTCap ;
      uint256   regularNFTCap ;
@@ -35,9 +39,9 @@ contract BookPublisher  is CCIPReceiver, ERC1155 {
     // investors / early adopters mapping to keep track of who has withdrawn his/her share  from the contract
     mapping(address => bool) public hasWithdrawn;
     mapping(uint256 => uint256) private _totalSupply;
-  
-
- constructor(address router,  string memory uri_,Config memory _config) CCIPReceiver(router) ERC1155(uri_){
+  IRouterClient public sendRouter;
+LinkTokenInterface public linkToken;
+ constructor(address r_router,  address s_router ,address _linktoken ,string memory uri_,Config memory _config ) CCIPReceiver(r_router) ERC1155(uri_){
     if(
         _config .superNFTPrice ==0 ||        _config .salePrice ==0 ||
         _config.superNFTCap ==0 ||     _config.regularNFTCap ==0 ||_config. paymentToken == address(0) ||
@@ -53,6 +57,10 @@ contract BookPublisher  is CCIPReceiver, ERC1155 {
     superNFTPrice =_config .superNFTPrice;
     paymentToken=_config .paymentToken;
     author=_config .author;
+    sendRouter = IRouterClient(s_router);
+     linkToken = LinkTokenInterface(_linktoken);
+        // approve router to spend any amount of link as fee
+        linkToken.approve(s_router, type(uint256).max);
   } 
 
 
@@ -177,16 +185,7 @@ function _buyRegularNFTCrossChain( address to) internal  {
     
 
     function withdraw() external {
-        if(saleEndTime > block.timestamp){
-            revert();
-        }
-        if(balanceOf(msg.sender, uint256(Category.Super))==0){
-            revert();
-        }
-        if(hasWithdrawn[msg.sender]){
-            revert();
-        }
-
+        _investorCanWithdraw(msg.sender);
         if(_amountPerInvestors==0){
             uint256 total = (totalSupply(uint256(Category.Regular)) * salePrice)/2;
             uint256 totalAdoptors = totalSupply(uint256(Category.Super))-1;
@@ -200,24 +199,85 @@ function _buyRegularNFTCrossChain( address to) internal  {
         
     }
     function authorWthdraw() external {
-        if(msg.sender!= author){
-            revert();
-        }
-        if(saleEndTime > block.timestamp){
-            revert();
-        }
-        if(balanceOf(msg.sender, uint256(Category.Super))==0){
-            revert();
-        }
-        if(authorHasWithdrawn){
-            revert();
-        }
+                  _authorCanWithdraw( msg.sender);
+
           uint256 total = (totalSupply(uint256(Category.Regular)) * salePrice)/2;
           authorHasWithdrawn=true;
         IERC20(paymentToken).transfer(msg.sender, total);
       
      
         
+    }
+    function withdrawCrossChain(uint64 destinationChainSelector) external returns (bytes32 messageId){
+       
+        if(_amountPerInvestors==0){
+            uint256 total = (totalSupply(uint256(Category.Regular)) * salePrice)/2;
+            uint256 totalAdoptors = totalSupply(uint256(Category.Super))-1;
+            _amountPerInvestors = total/totalAdoptors;
+
+        }
+          hasWithdrawn[msg.sender]=true;
+        return  _send( msg.sender, paymentToken, _amountPerInvestors,  destinationChainSelector);
+
+      
+     
+        
+    }
+    function authorWthdrawCrossChain(uint64 destinationChainSelector) external returns (bytes32 messageId){
+            _authorCanWithdraw( msg.sender);
+          uint256 total = (totalSupply(uint256(Category.Regular)) * salePrice)/2;
+          authorHasWithdrawn=true;
+       return  _send( msg.sender, paymentToken, total,  destinationChainSelector);
+      
+     
+        
+    }
+    function _investorCanWithdraw(address to) internal view {
+         if(saleEndTime > block.timestamp){
+            revert();
+        }
+        if(balanceOf(to, uint256(Category.Super))==0){
+            revert();
+        }
+        if(hasWithdrawn[to]){
+            revert();
+        }
+       
+    }
+    function _authorCanWithdraw(address to) internal view {
+           if(to != author){
+            revert();
+        }
+        if(saleEndTime > block.timestamp){
+            revert();
+        }
+        
+        if(authorHasWithdrawn){
+            revert();
+        }
+    }
+
+
+
+        function _send( address _receiver, address _token, uint256 _amount, uint64 destinationChainSelector) internal returns (bytes32 messageId) {
+        Client.EVMTokenAmount [] memory tokenAmounts = new Client.EVMTokenAmount[](1);
+        tokenAmounts[0]=   Client.EVMTokenAmount({
+            token:_token,
+            amount:_amount
+        });
+                Client.EVM2AnyMessage memory message = Client.EVM2AnyMessage({
+        receiver: abi.encode(_receiver),
+            data: "",
+            tokenAmounts: tokenAmounts,
+            extraArgs: Client._argsToBytes(
+                Client.EVMExtraArgsV1({gasLimit: 0, strict: false})
+            ),
+            feeToken: address(linkToken)
+        });
+// approve the token 
+    IERC20(_token).approve(address(sendRouter), _amount);
+     messageId=   sendRouter.ccipSend(destinationChainSelector, message);
+
     }
 }
 
