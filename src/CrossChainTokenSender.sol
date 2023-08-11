@@ -8,11 +8,9 @@ import {Client} from "@chainlink/contracts-ccip/src/v0.8/ccip/libraries/Client.s
 import {Withdraw} from "./Withdraw.sol";
 
 /**
- * THIS IS AN EXAMPLE CONTRACT THAT USES HARDCODED VALUES FOR CLARITY.
- * THIS IS AN EXAMPLE CONTRACT THAT USES UN-AUDITED CODE.
- * DO NOT USE THIS CODE IN PRODUCTION.
+ * This contract is based on chainlink BasicTokenSender implementation
  */
-contract BasicTokenSender is Withdraw {
+contract CrossChainTokenSender is Withdraw {
     enum PayFeesIn {
         Native,
         LINK
