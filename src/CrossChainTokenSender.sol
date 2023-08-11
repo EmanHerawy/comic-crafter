@@ -11,10 +11,7 @@ import {Withdraw} from "./Withdraw.sol";
  * This contract is based on chainlink BasicTokenSender implementation
  */
 contract CrossChainTokenSender is Withdraw {
-    enum PayFeesIn {
-        Native,
-        LINK
-    }
+  
 
     address immutable i_router;
     address immutable i_link;
@@ -41,9 +38,8 @@ contract CrossChainTokenSender is Withdraw {
         uint64 destinationChainSelector,
         address receiver,
         address _token,
-        uint256 _amount,
-         PayFeesIn payFeesIn
-    ) external payable{
+        uint256 _amount 
+    ) external returns ( bytes32    messageId){
        IERC20(_token).transferFrom(
                 msg.sender,
                 address(this),
@@ -63,28 +59,15 @@ contract CrossChainTokenSender is Withdraw {
             data: "",
             tokenAmounts: tokensToSendDetails,
             extraArgs: "",
-            feeToken: payFeesIn == PayFeesIn.LINK ? i_link : address(0)
+            feeToken:   i_link
         });
 
-        uint256 fee = IRouterClient(i_router).getFee(
-            destinationChainSelector,
-            message
-        );
+       
 
-        bytes32 messageId;
-
-        if (payFeesIn == PayFeesIn.LINK) {
-            // LinkTokenInterface(i_link).approve(i_router, fee);
             messageId = IRouterClient(i_router).ccipSend(
                 destinationChainSelector,
                 message
             );
-        } else {
-            messageId = IRouterClient(i_router).ccipSend{value: fee}(
-                destinationChainSelector,
-                message
-            );
-        }
 
         emit MessageSent(messageId);
     }

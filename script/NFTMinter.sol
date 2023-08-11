@@ -6,14 +6,27 @@ import "./Helper.sol";
 import {IRouterClient} from "@chainlink/contracts-ccip/src/v0.8/ccip/interfaces/IRouterClient.sol";
 import {Client} from "@chainlink/contracts-ccip/src/v0.8/ccip/libraries/Client.sol";
 import {IERC20} from "@chainlink/contracts-ccip/src/v0.8/vendor/openzeppelin-solidity/v4.8.0/token/ERC20/IERC20.sol";
- import {TokenAndDataReceiver} from "../src/TokenAndDataTransfer/TokenAndDataReceiver.sol";
-import {TokenAndDataSender} from "../src/TokenAndDataTransfer/TokenAndDataSender.sol";
-import {MyNFTAirDrop} from "../src/TokenAndDataTransfer/MyNFTAirDrop.sol";
+ import {CrossChainTokenSender} from "../src/CrossChainTokenSender.sol";
+import { BookPublisher , Config} from "../src/BookPublisher.sol";
 contract NFTMinter is Script, Helper {
+//    enum PayFeesIn {
+//         Native,
+//         LINK
+//     }
+//      struct Config {
+//       uint256   superNFTCap ;
+//      uint256   regularNFTCap ;
+//      uint256   saleTime ;
+//      uint256   saleEndTime ;
+//      uint256   salePrice;
+//      uint256   superNFTPrice;
+//     address    paymentToken;
+//     address       author;
+//  }
     // run sepholia to avalanche fujji
     function deploySender(
         SupportedNetworks source
-    ) external returns (TokenAndDataSender sender) {
+    ) external returns ( CrossChainTokenSender sender) {
 
         
      
@@ -25,7 +38,7 @@ contract NFTMinter is Script, Helper {
         );
  
  
-        sender = new TokenAndDataSender(sourceRouter, linkToken);
+        sender = new  CrossChainTokenSender(sourceRouter, linkToken);
  
      // send some link token to the contract to be used to pay fees
      IERC20(linkToken).transfer(address(sender),1 ether);
@@ -67,7 +80,7 @@ contract NFTMinter is Script, Helper {
 
         Client.EVM2AnyMessage memory _message = Client.EVM2AnyMessage({
             receiver: abi.encode(address(receiver)),
-              data:abi.encodeWithSignature("mint(address)",msg.sender),
+              data:"",
             tokenAmounts: tokens,
             extraArgs:"",
             feeToken: linkToken
@@ -92,6 +105,7 @@ contract NFTMinter is Script, Helper {
           SupportedNetworks source,
         address _token,
         uint256 _amount,
+        
         uint256 fees
      ) external {
         uint256 deployerPrivateKey = vm.envUint("PRIVATE_KEY");
@@ -102,11 +116,15 @@ contract NFTMinter is Script, Helper {
          IERC20(linkToken).transfer(sender,fees);
         (, , , uint64 destinationChainId) = getConfigFromNetwork(destination);
         IERC20(_token).transfer(sender, _amount);
-         bytes32 messageId = TokenAndDataSender(sender).send(
+         bytes32 messageId =  CrossChainTokenSender(sender).send(
            
-            receiver,   _token,   _amount,   destinationChainId
+        destinationChainId,    receiver,   _token,   _amount
              
-        );
+        );/**    uint64 destinationChainSelector,
+        address receiver,
+        address _token,
+        uint256 _amount,
+         PayFeesIn payFeesIn */
 
         console.log(
             "You can now monitor the status of your Chainlink CCIP Message via https://ccip.chain.link using CCIP Message ID: "
@@ -117,18 +135,33 @@ contract NFTMinter is Script, Helper {
     }
   
     function deployReceiver(
-       SupportedNetworks destination
-    ) external returns ( TokenAndDataReceiver receiver) {
+       SupportedNetworks destination,
+       SupportedNetworks source,
+       string memory uri_
+    ) external returns ( BookPublisher receiver) {
 
-      
+      /**address r_router,  address s_router ,address _linktoken ,string memory uri_,Config memory _config */
+    
         uint256 senderPrivateKey = vm.envUint("PRIVATE_KEY");
         vm.startBroadcast(senderPrivateKey);
-
-  
+         
+     (address sourceRouter, address linkToken, , ) = getConfigFromNetwork(
+            source
+        );
         (address desinationRouter, , , ) = getConfigFromNetwork(destination);
 
- 
-         receiver = new TokenAndDataReceiver(desinationRouter);
+   Config memory _config ;
+            _config.author=msg.sender;
+            _config.paymentToken=linkToken;
+            _config.regularNFTCap=1000;
+            _config.superNFTCap=10;
+            _config.saleTime= block.timestamp + 30 days;
+            _config.saleEndTime= block.timestamp + (30 days *5);
+            _config.salePrice = 2 wei;
+            _config.superNFTPrice= 0.0001 ether;
+            
+     
+    receiver = new BookPublisher(desinationRouter, sourceRouter,linkToken,uri_,_config);
 
  
 
