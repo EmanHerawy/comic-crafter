@@ -55,7 +55,7 @@ LinkTokenInterface public linkToken;
         _config .superNFTPrice ==0 ||        _config .salePrice ==0 ||
         _config.superNFTCap ==0 ||     _config.regularNFTCap ==0 ||_config. paymentToken == address(0) ||
      _config.saleTime <= block.timestamp || _config.saleTime + block.timestamp > _config.saleEndTime){
-        revert();
+        revert InvalidOrEmptyArguments();
     }
     
     superNFTCap=_config.superNFTCap;
@@ -69,20 +69,20 @@ LinkTokenInterface public linkToken;
     sendRouter = IRouterClient(s_router);
      linkToken = LinkTokenInterface(_linktoken);
         // approve router to spend any amount of link as fee
-        linkToken.approve(s_router, type(uint256).max);
+     //   linkToken.approve(s_router, type(uint256).max);
   } 
 
 
 function buySuperNFT( address to) external  {
     // should be before sale time 
     if(block.timestamp>=saleTime){
-        revert();
+        revert SuperNFTSaleEnded();
     }
     if (balanceOf(to,uint256(Category.Super))!=0){
-        revert();
+        revert CannotMintTwice();
     }
     if (totalSupply(uint256(Category.Super)) == superNFTCap){
-        revert();
+        revert MaxCapReached();
     }
     // get the money to purchase the nft
     IERC20(paymentToken).transferFrom(to,author,superNFTPrice);
@@ -93,14 +93,17 @@ function buySuperNFT( address to) external  {
 }
 function buyRegularNFT( address to) external  {
     // should be before sale time 
-    if(block.timestamp<saleTime || block.timestamp > saleEndTime){
-        revert();
+      if(block.timestamp<saleTime){
+        revert SaledIsNotStarted( saleEndTime,block.timestamp );
+    } 
+    if( block.timestamp > saleEndTime){
+        revert SaledEnded(saleEndTime,block.timestamp );
     } 
     if (balanceOf(to,uint256(Category.Regular))!=0){
-        revert();
+        revert CannotMintTwice();
     }
          if (totalSupply(uint256(Category.Regular)) == regularNFTCap){
-        revert();
+        revert MaxCapReached();
     }
     // contract should hold the money to eb distributed among auther and early adopter 
     IERC20(paymentToken).transferFrom(to,address(this),salePrice);
@@ -114,7 +117,7 @@ function _buySuperNFTCrossChain( address to) internal  {
     // should be before sale time 
     
     if (balanceOf(to,uint256(Category.Super))!=0){
-        revert();
+        revert CannotMintTwice();
     }
     // get the money to purchase the nft
     IERC20(paymentToken).transferFrom(address(this),author,superNFTPrice);
@@ -125,11 +128,14 @@ function _buySuperNFTCrossChain( address to) internal  {
 }
 function _buyRegularNFTCrossChain( address to) internal  {
     // should be before sale time 
-    if(block.timestamp<saleTime || block.timestamp > saleEndTime){
-        revert();
+    if(block.timestamp<saleTime){
+        revert SaledIsNotStarted( saleEndTime,block.timestamp );
+    } 
+    if( block.timestamp > saleEndTime){
+        revert SaledEnded(saleEndTime,block.timestamp );
     } 
     if (balanceOf(to,uint256(Category.Regular))!=0){
-        revert();
+        revert CannotMintTwice();
     }
      
     // only one per user could be mintes at a time
@@ -246,7 +252,7 @@ function _buyRegularNFTCrossChain( address to) internal  {
             revert();
         }
         if(balanceOf(to, uint256(Category.Super))==0){
-            revert();
+            revert CannotMintTwice();
         }
         if(hasWithdrawn[to]){
             revert();
@@ -288,6 +294,17 @@ function _buyRegularNFTCrossChain( address to) internal  {
      messageId=   sendRouter.ccipSend(destinationChainSelector, message);
 
     }
+
+
+    /* -------------------------------- Errors go here --------------------------------*/// @title A title that should describe the contract/interface
+    
+
+    error CannotMintTwice();
+    error InvalidOrEmptyArguments();
+    error SaledEnded( uint256 endtime,uint256 currentTime);
+    error SaledIsNotStarted( uint256 start,uint256 currentTime);
+    error SuperNFTSaleEnded();
+    error MaxCapReached();
 }
 
 
