@@ -1,0 +1,121 @@
+{
+  "abi": [],
+  "bytecode": {
+    "object": "0x6080604052348015600f57600080fd5b50603f80601d6000396000f3fe6080604052600080fdfea2646970667358221220766b473a3de751f7bc72f2842d5cb689fde0229cc0a8c6a518a8b95a56b2d38564736f6c63430008130033",
+    "sourceMap": "600:23:47:-:0;;;;;;;;;;;;;;;;;;;",
+    "linkReferences": {}
+  },
+  "deployedBytecode": {
+    "object": "0x6080604052600080fdfea2646970667358221220766b473a3de751f7bc72f2842d5cb689fde0229cc0a8c6a518a8b95a56b2d38564736f6c63430008130033",
+    "sourceMap": "600:23:47:-:0;;;;;",
+    "linkReferences": {}
+  },
+  "methodIdentifiers": {},
+  "rawMetadata": "{\"compiler\":{\"version\":\"0.8.19+commit.7dd6d404\"},\"language\":\"Solidity\",\"output\":{\"abi\":[],\"devdoc\":{\"kind\":\"dev\",\"methods\":{},\"version\":1},\"userdoc\":{\"kind\":\"user\",\"methods\":{},\"notice\":\"this contract shold handle issuing comic book nft . since the books issued per auther is not unique given that author issue multiple coppied of the book as nfts , we will implement ERC1155 interface.  with each book minted, a story card is minted to be used inside the game . early addapters have more benefit than those come late to the party, they got 40 % of the revnue of the sale  contract should keep traack of the early addapters and manage the payment  cross chain minting is enabled by default \",\"version\":1}},\"settings\":{\"compilationTarget\":{\"src/ComicINO.sol\":\"ComicBook\"},\"evmVersion\":\"paris\",\"libraries\":{},\"metadata\":{\"bytecodeHash\":\"ipfs\"},\"optimizer\":{\"enabled\":true,\"runs\":200},\"remappings\":[\":@chainlink/=node_modules/@chainlink/\",\":@chainlink/contracts-ccip/=node_modules/@chainlink/contracts-ccip/\",\":@chainlink/contracts/=node_modules/@chainlink/contracts/\",\":@eth-optimism/=node_modules/@eth-optimism/\",\":@openzeppelin/=lib/openzeppelin-contracts/\",\":ds-test/=lib/forge-std/lib/ds-test/src/\",\":erc4626-tests/=lib/openzeppelin-contracts/lib/erc4626-tests/\",\":forge-std/=lib/forge-std/src/\",\":openzeppelin-contracts/=lib/openzeppelin-contracts/\",\"lib/openzeppelin-contracts:openzeppelin/=lib/openzeppelin-contracts/contracts/\"]},\"sources\":{\"src/ComicINO.sol\":{\"keccak256\":\"0xb099615584c393940e5472568eab186219d49a0fc4c068edd7f58155131083cc\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://7926f985f00f5e50b0072a12f57747be25f44c546cb43843882f055d7532bd27\",\"dweb:/ipfs/QmesjSa84kmPCtqzk4oFwpEjKKTeoGFJukRGgf3ZKdYeV7\"]}},\"version\":1}",
+  "metadata": {
+    "compiler": {
+      "version": "0.8.19+commit.7dd6d404"
+    },
+    "language": "Solidity",
+    "output": {
+      "abi": [],
+      "devdoc": {
+        "kind": "dev",
+        "methods": {},
+        "version": 1
+      },
+      "userdoc": {
+        "kind": "user",
+        "methods": {},
+        "version": 1
+      }
+    },
+    "settings": {
+      "remappings": [
+        "@chainlink/=node_modules/@chainlink/",
+        "@chainlink/contracts-ccip/=node_modules/@chainlink/contracts-ccip/",
+        "@chainlink/contracts/=node_modules/@chainlink/contracts/",
+        "@eth-optimism/=node_modules/@eth-optimism/",
+        "@openzeppelin/=lib/openzeppelin-contracts/",
+        "ds-test/=lib/forge-std/lib/ds-test/src/",
+        "erc4626-tests/=lib/openzeppelin-contracts/lib/erc4626-tests/",
+        "forge-std/=lib/forge-std/src/",
+        "openzeppelin-contracts/=lib/openzeppelin-contracts/",
+        "lib/openzeppelin-contracts:openzeppelin/=lib/openzeppelin-contracts/contracts/"
+      ],
+      "optimizer": {
+        "enabled": true,
+        "runs": 200
+      },
+      "metadata": {
+        "bytecodeHash": "ipfs"
+      },
+      "compilationTarget": {
+        "src/ComicINO.sol": "ComicBook"
+      },
+      "libraries": {}
+    },
+    "sources": {
+      "src/ComicINO.sol": {
+        "keccak256": "0xb099615584c393940e5472568eab186219d49a0fc4c068edd7f58155131083cc",
+        "urls": [
+          "bzz-raw://7926f985f00f5e50b0072a12f57747be25f44c546cb43843882f055d7532bd27",
+          "dweb:/ipfs/QmesjSa84kmPCtqzk4oFwpEjKKTeoGFJukRGgf3ZKdYeV7"
+        ],
+        "license": "MIT"
+      }
+    },
+    "version": 1
+  },
+  "ast": {
+    "absolutePath": "src/ComicINO.sol",
+    "id": 44454,
+    "exportedSymbols": {
+      "ComicBook": [
+        44453
+      ]
+    },
+    "nodeType": "SourceUnit",
+    "src": "32:591:47",
+    "nodes": [
+      {
+        "id": 44451,
+        "nodeType": "PragmaDirective",
+        "src": "32:23:47",
+        "nodes": [],
+        "literals": [
+          "solidity",
+          "0.8",
+          ".19"
+        ]
+      },
+      {
+        "id": 44453,
+        "nodeType": "ContractDefinition",
+        "src": "600:23:47",
+        "nodes": [],
+        "abstract": false,
+        "baseContracts": [],
+        "canonicalName": "ComicBook",
+        "contractDependencies": [],
+        "contractKind": "contract",
+        "documentation": {
+          "id": 44452,
+          "nodeType": "StructuredDocumentation",
+          "src": "57:542:47",
+          "text": " this contract shold handle issuing comic book nft . since the books issued per auther is not unique given that author issue multiple coppied of the book as nfts , we will implement ERC1155 interface. \n with each book minted, a story card is minted to be used inside the game .\n early addapters have more benefit than those come late to the party, they got 40 % of the revnue of the sale \n contract should keep traack of the early addapters and manage the payment \n cross chain minting is enabled by default "
+        },
+        "fullyImplemented": true,
+        "linearizedBaseContracts": [
+          44453
+        ],
+        "name": "ComicBook",
+        "nameLocation": "609:9:47",
+        "scope": 44454,
+        "usedErrors": []
+      }
+    ],
+    "license": "MIT"
+  },
+  "id": 47
+}
