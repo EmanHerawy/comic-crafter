@@ -54,7 +54,7 @@ Config  _config ;
         (address desinationRouter,  , , uint64 destinationChainId) = getConfigFromNetwork( SupportedNetworks.ETHEREUM_SEPOLIA);
      
      
-    publisher = new BookPublisher(desinationRouter, sourceRouter,linkToken,uri_,_config);
+    // publisher = new BookPublisher(desinationRouter, sourceRouter,linkToken,uri_,_config);
     } 
     function testDefualtValues()  public{
         assertEq(author, publisher.author()); 

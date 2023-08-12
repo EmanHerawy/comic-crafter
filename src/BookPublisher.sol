@@ -50,27 +50,50 @@ contract BookPublisher  is CCIPReceiver, ERC1155 {
     mapping(uint256 => uint256) private _totalSupply;
   IRouterClient public sendRouter;
 LinkTokenInterface public linkToken;
- constructor(address r_router,  address s_router ,address _linktoken ,string memory uri_,Config memory _config ) CCIPReceiver(r_router) ERC1155(uri_){
-    if(
-        _config .superNFTPrice ==0 ||        _config .salePrice ==0 ||
-        _config.superNFTCap ==0 ||     _config.regularNFTCap ==0 ||_config. paymentToken == address(0) ||
-     _config.saleTime <= block.timestamp || _config.saleTime + block.timestamp > _config.saleEndTime){
-        revert InvalidOrEmptyArguments();
-    }
+
+
+constructor(address r_router,  address s_router ,address _linktoken, address _paymentToken,uint256 _saleTime, uint256 _saleEndTime, uint256 _salePrice) CCIPReceiver(r_router) ERC1155("https://game.example/api/item/{id}.json"){
+    // if(
+    //     _config .superNFTPrice ==0 ||        _config .salePrice ==0 ||
+    //     _config.superNFTCap ==0 ||     _config.regularNFTCap ==0 ||_config. paymentToken == address(0) ||
+    //  _config.saleTime <= block.timestamp || _config.saleTime + block.timestamp > _config.saleEndTime){
+    //     revert InvalidOrEmptyArguments();
+    // }
     
-    superNFTCap=_config.superNFTCap;
-    regularNFTCap=_config.regularNFTCap;    
-    saleTime=_config.saleTime;
-    saleEndTime =_config.saleEndTime;
-    salePrice =_config .salePrice;
-    superNFTPrice =_config .superNFTPrice;
-    paymentToken=_config .paymentToken;
-    author=_config .author;
+    superNFTCap=10;
+    regularNFTCap=100;    
+    saleTime=_saleTime;
+    saleEndTime =_saleEndTime;
+    salePrice =_salePrice;
+    superNFTPrice =salePrice *10;
+    paymentToken=_paymentToken;
+    author=msg.sender;
     sendRouter = IRouterClient(s_router);
      linkToken = LinkTokenInterface(_linktoken);
         // approve router to spend any amount of link as fee
-     //   linkToken.approve(s_router, type(uint256).max);
+       linkToken.approve(s_router, type(uint256).max);
   } 
+//  constructor(address r_router,  address s_router ,address _linktoken ,string memory uri_,Config memory _config ) CCIPReceiver(r_router) ERC1155(uri_){
+//     if(
+//         _config .superNFTPrice ==0 ||        _config .salePrice ==0 ||
+//         _config.superNFTCap ==0 ||     _config.regularNFTCap ==0 ||_config. paymentToken == address(0) ||
+//      _config.saleTime <= block.timestamp || _config.saleTime + block.timestamp > _config.saleEndTime){
+//         revert InvalidOrEmptyArguments();
+//     }
+    
+//     superNFTCap=_config.superNFTCap;
+//     regularNFTCap=_config.regularNFTCap;    
+//     saleTime=_config.saleTime;
+//     saleEndTime =_config.saleEndTime;
+//     salePrice =_config .salePrice;
+//     superNFTPrice =_config .superNFTPrice;
+//     paymentToken=_config .paymentToken;
+//     author=_config .author;
+//     sendRouter = IRouterClient(s_router);
+//      linkToken = LinkTokenInterface(_linktoken);
+//         // approve router to spend any amount of link as fee
+//        //linkToken.approve(s_router, type(uint256).max);
+//   } 
 
 
 function buySuperNFT( address to) external  {

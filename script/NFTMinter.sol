@@ -136,12 +136,12 @@ contract NFTMinter is Script, Helper {
   
     function deployReceiver(
        SupportedNetworks destination,
-       SupportedNetworks source,
-       string memory uri_
+       SupportedNetworks source
+     
     ) external returns ( BookPublisher receiver) {
 
       /**address r_router,  address s_router ,address _linktoken ,string memory uri_,Config memory _config */
-    
+      string memory uri_ = "https://game.example/api/item/{id}.json" ;
         uint256 senderPrivateKey = vm.envUint("PRIVATE_KEY");
         vm.startBroadcast(senderPrivateKey);
          
@@ -149,19 +149,46 @@ contract NFTMinter is Script, Helper {
             source
         );
         (address desinationRouter, , , ) = getConfigFromNetwork(destination);
+        (address paymentToken, ) = getDummyTokensFromNetwork(destination);
+uint256 _saleTime= block.timestamp + 30 days;
+uint256 _saleEndTime= block.timestamp + (30 days *5); 
+uint256 _salePrice  = 2 wei;
+//    Config memory _config ;
+//             _config.author=msg.sender;
+//             _config.paymentToken=paymentToken;
+//             _config.regularNFTCap=1000;
+//             _config.superNFTCap=10;
+//             _config.saleTime= block.timestamp + 30 days;
+//             _config.saleEndTime= block.timestamp + (30 days *5);
+//             _config.salePrice = 2 wei;
+//             _config.superNFTPrice= 0.0001 ether;
 
-   Config memory _config ;
-            _config.author=msg.sender;
-            _config.paymentToken=linkToken;
-            _config.regularNFTCap=1000;
-            _config.superNFTCap=10;
-            _config.saleTime= block.timestamp + 30 days;
-            _config.saleEndTime= block.timestamp + (30 days *5);
-            _config.salePrice = 2 wei;
-            _config.superNFTPrice= 0.0001 ether;
+
+//                 Config ({
+//                 author:msg.sender,
+//            paymentToken:paymentToken,
+//            regularNFTCap:1000,
+//            superNFTCap:10,
+//            saleTime: block.timestamp + 30 days,
+//            saleEndTime: block.timestamp + (30 days *5),
+//            salePrice : 2 wei,
+//            superNFTPrice: 0.0001 ether
+//             })
             
-     
-    receiver = new BookPublisher(desinationRouter, sourceRouter,linkToken,uri_,_config);
+        //     Config memory contractConfig = Config ({
+        //         author:msg.sender,
+        //    paymentToken:paymentToken,
+        //    regularNFTCap:1000,
+        //    superNFTCap:10,
+        //    saleTime: block.timestamp + 30 days,
+        //    saleEndTime: block.timestamp + (30 days *5),
+        //    salePrice : 2 wei,
+        //    superNFTPrice: 0.0001 ether
+        //     });
+            
+        console.log("before deployment",sourceRouter );
+/**address r_router,  address s_router ,address _linktoken, address _paymentToken,uint256 _saleTime, uint256 _saleEndTime, uint256 _salePrice */
+    receiver = new BookPublisher(desinationRouter, sourceRouter,linkToken,paymentToken,_saleTime,_saleEndTime,_salePrice );
 
  
 
