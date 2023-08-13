@@ -28,49 +28,18 @@
       "isFixedGasLimit": false
     }
   ],
-  "receipts": [
-    {
-      "transactionHash": "0x1f7db3840d321b8302abed360f4bc52e0528c8b3fcb8b399501c3c6f6f5ad5db",
-      "transactionIndex": "0x1",
-      "blockHash": "0x711a4d49fd6103123945ae3558b3d54b98476fe597057639daf00c008773974f",
-      "blockNumber": "0xca3136",
-      "from": "0x8906EA0bc4b4e62314417eCdcbe45757112720E8",
-      "to": null,
-      "cumulativeGasUsed": "0x277fae",
-      "gasUsed": "0x26c89d",
-      "contractAddress": "0x8861B67f5Ac24eDc67A34162B31472ADDb1547A7",
-      "logs": [
-        {
-          "address": "0xdc2CC710e42857672E7907CF474a69B63B93089f",
-          "topics": [
-            "0x8c5be1e5ebec7d5bd14f71427d1e84f3dd0314c0f7b2291e5b200ac8c7c3b925",
-            "0x0000000000000000000000008861b67f5ac24edc67a34162b31472addb1547a7",
-            "0x000000000000000000000000eb52e9ae4a9fb37172978642d4c141ef53876f26"
-          ],
-          "data": "0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff",
-          "blockHash": "0x711a4d49fd6103123945ae3558b3d54b98476fe597057639daf00c008773974f",
-          "blockNumber": "0xca3136",
-          "transactionHash": "0x1f7db3840d321b8302abed360f4bc52e0528c8b3fcb8b399501c3c6f6f5ad5db",
-          "transactionIndex": "0x1",
-          "logIndex": "0x0",
-          "removed": false
-        }
-      ],
-      "status": "0x1",
-      "logsBloom": "0x00000000000000000000000001000000000000000000000000000000000000200000000000000000000000000000000000000000000000040000000000200000000000000000000000010000000000000000000000000000000000000000000000000000100000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000020000000000000000000020000000000000000000000000800000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000010000000001000000000020000000000000000000000000000000000000000",
-      "type": "0x2",
-      "effectiveGasPrice": "0xb2d05e32"
-    }
-  ],
+  "receipts": [],
   "libraries": [],
-  "pending": [],
+  "pending": [
+    "0x1f7db3840d321b8302abed360f4bc52e0528c8b3fcb8b399501c3c6f6f5ad5db"
+  ],
   "returns": {
     "receiver": {
       "internal_type": "contract BookPublisher",
       "value": "0x8861B67f5Ac24eDc67A34162B31472ADDb1547A7"
     }
   },
-  "timestamp": 1691929813,
+  "timestamp": 1691929806,
   "chain": 420,
   "multi": false,
   "commit": "c35ef50"

@@ -52,7 +52,7 @@ contract BookPublisher  is CCIPReceiver, ERC1155 {
 LinkTokenInterface public linkToken;
 
 
-constructor(address r_router,  address s_router ,address _linktoken, address _paymentToken,uint256 _saleTime, uint256 _saleEndTime, uint256 _salePrice) CCIPReceiver(r_router) ERC1155("https://game.example/api/item/{id}.json"){
+constructor(address r_router,  address s_router ,address _linktoken, address _paymentToken,uint256 _saleTime, uint256 _saleEndTime, uint256 _salePrice) CCIPReceiver(r_router) ERC1155("ipfs://QmWBrkgftdC2Ym2ipEGvBKXSH5ABDedFupmNvuW7jJhrCg/{id}.json"){
     // if(
     //     _config .superNFTPrice ==0 ||        _config .salePrice ==0 ||
     //     _config.superNFTCap ==0 ||     _config.regularNFTCap ==0 ||_config. paymentToken == address(0) ||
