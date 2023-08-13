@@ -52,7 +52,9 @@ run `forge test`. Feel free to test it against any forked blockchain networks
 ## Contribution and Contact:
 Community contributions drive the growth of Comic Crafter. Reach out and get involved in shaping the future of webcomics and interactive entertainment.
 
-
+## front end 
+check this repo 
+https://github.com/ismail9k/comic-crafter 
 ## License:
 Comic Crafter is released under the MIT License, granting you the freedom to use and modify the platform to suit your creative and entrepreneurial needs.
 
