@@ -1,3 +1,4 @@
+[![Ceasefire Now](https://badge.techforpalestine.org/ceasefire-now)](https://techforpalestine.org/learn-more)
 # Comic Crafter: Webcomic Launchpad and Cross-Chain Comic Game Platform
 
 
